@@ -29,20 +29,45 @@
 //         .for_each(|(_, line)| println!("{}", line))
 // }
 
-fn frargs() {
-    let target: String = std::env::args().nth(1).expect("no filename provided");
-    let file = std::fs::read_to_string(target).expect("unable to read file");
-    file.lines().for_each(|line| {
-        if let Ok(value) = line.parse::<usize>() {
-            println!("{}", value);
-        } else {
-            println!("line is not a number");
-        }
-    });
+// fn frargs() {
+//     let target: String = std::env::args().nth(1).expect("no filename provided");
+//     let file = std::fs::read_to_string(target).expect("unable to read file");
+//     file.lines().for_each(|line| {
+//         if let Ok(value) = line.parse::<usize>() {
+//             println!("{}", value);
+//         } else {
+//             println!("line is not a number");
+//         }
+//     });
+// }
+
+struct SomeData {
+    data: Vec<u8>,
+    idx: usize,
+}
+
+impl Iterator for SomeData {
+    type Item = u8;
+    fn next(&mut self) -> Option<Self::Item> {
+        let current_idx = self.idx;
+        self.idx += 1;
+
+        return self.data.get(current_idx).map(|x| *x);
+    }
+}
+
+impl SomeData {
+    fn new(data: Vec<u8>) -> SomeData {
+        SomeData { data, idx: 0 }
+    }
 }
 
 fn main() {
     // iterator();
     // read_file();
-    frargs();
+    // frargs();
+    let data: SomeData = SomeData::new(vec![1, 5, 10, 3]);
+    for x in data {
+        println!("{}", x);
+    }
 }
